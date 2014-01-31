@@ -1,0 +1,56 @@
+#!/bin/env bash
+#
+# based on https://stomp.colorado.edu/blog/blog/2011/12/05/on-selenium-grid-and-init-scripts/
+
+. /etc/init.d/functions
+
+USER="root"
+GROUP="root"
+SELENIUM_VERSION="{{ selenium_version }}"
+SELENIUM_HOME="{{ selenium_dir }}"
+JAVA_CMD="java -jar"
+PROG="selenium"
+LOCK_FILE="/var/lock/subsys/${PROG}"
+PID_FILE="/var/run/selenium.pid"
+LOG_FILE="/var/log/selenium/selenium.log"
+ERROR_LOG="/var/log/selenium/error.log"
+REDIRECT="1>>${LOG_FILE} 2>>{ERROR_LOG} &"
+EXEC="${JAVA_CMD}"
+EXEC_REDIRECT="${JAVA_CMD} ${SELENIUM_HOME}/selenium-server-standalone-${SELENIUM_VERSION}.jar ${REDIRECT}"
+
+case "$1" in
+    start)
+        if [ ! -f ${LOG_FILE} ]; then
+            mkdir -m 644 $(dirname ${LOG_FILE})
+            chown ${USER}:${GROUP} $(dirname ${LOG_FILE})
+            touch ${LOG_FILE}
+        fi
+
+        echo -n "Starting ${PROG}: " | tee -a ${LOG_FILE}
+        daemon --user ${USER} --pidfile ${PID_FILE} ${EXEC_REDIRECT}
+        RETVAL=$?
+        echo | tee -a ${LOG_FILE}
+        if [ ${RETVAL} -eq 0 ]; then
+            touch ${LOCK_FILE}
+            PID="$(pgrep -f "$(echo ${EXEC})")"
+            echo ${PID} > ${PID_FILE}
+        fi
+        ;;
+    status)
+        status -p ${PID_FILE} ${PROG}
+        ;;
+    stop)
+        echo -n "Stopping ${PROG}: " | tee -a ${LOG_FILE}
+        killproc -p ${PID_FILE} ${PROG}
+        RETVAL=$?
+        echo | tee -a ${LOG_FILE}
+        [ $RETVAL = 0 ] && rm -f ${LOCK_FILE} ${PID_FILE}
+        ;;
+    restart)
+        $0 stop
+        $0 start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|status|restart}"
+        exit 1
+esac

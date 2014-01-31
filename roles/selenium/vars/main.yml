@@ -1,0 +1,4 @@
+---
+selenium_version: 2.39.0
+selenium_port: 4444
+selenium_dir: /opt/selenium

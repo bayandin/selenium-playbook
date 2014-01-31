@@ -1,0 +1,14 @@
+---
+- name: create directory for selenium
+  shell: mkdir -p {{ selenium_dir }} creates={{ selenium_dir }}
+
+- name: download selenium
+  get_url:
+    url=https://selenium.googlecode.com/files/selenium-server-standalone-{{ selenium_version }}.jar
+    dest={{ selenium_dir }}/selenium-server-standalone-{{ selenium_version }}.jar
+
+- name: create init script
+  template:
+    src=selenium.j2
+    dest=/etc/init.d/selenium
+    owner=root group=root mode=0755

@@ -1,0 +1,8 @@
+---
+- name: prepare selenium
+  hosts: selenium-servers
+  user: root
+  sudo: yes
+  roles:
+  - java
+  - selenium
