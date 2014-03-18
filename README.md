@@ -1,4 +1,4 @@
-# selenium-playbook
+# Ansible playbook for Selenium
 
 ### Usage
 ```bash
