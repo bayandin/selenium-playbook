@@ -1,0 +1,14 @@
+---
+- name: create directory for downloads
+  shell: mkdir -p {{ tmp_dir }} creates={{ tmp_dir }}
+
+- name: download phantomjs
+  get_url:
+    url=https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-{{ phantomjs_version }}-linux-{{ ansible_machine }}.tar.bz2
+    dest={{ tmp_dir }}/phantomjs-{{ phantomjs_version }}.tar.bz2
+
+- name: extract phantomjs from archive
+  shell: tar jxf {{ tmp_dir }}/phantomjs-{{ phantomjs_version }}.tar.bz2 -C {{ tmp_dir }}
+
+- name: copy executable file for phantomjs
+  shell: cp {{ tmp_dir }}/phantomjs-{{ phantomjs_version }}-linux-{{ ansible_machine }}/bin/phantomjs {{ selenium_dir }}/phantomjs-{{ phantomjs_version }}

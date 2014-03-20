@@ -14,9 +14,11 @@ LOCK_FILE="/var/lock/subsys/${PROG}"
 PID_FILE="/var/run/selenium.pid"
 LOG_FILE="/var/log/selenium/selenium.log"
 ERROR_LOG="/var/log/selenium/error.log"
-REDIRECT="1>>${LOG_FILE} 2>>{ERROR_LOG} &"
+REDIRECT="1>>${LOG_FILE} 2>>${ERROR_LOG} &"
+CHROMEDRIVER="{% if with_chromedriver %}-Dwebdriver.chrome.driver={{ selenium_dir }}/chromedriver-{{ chromedriver_version }} -Dwebdriver.chrome.logfile=/var/log/selenium/chromedriver.log{% endif %}"
+PHANTOMJS="{% if with_phantomjs %}-Dphantomjs.binary.path={{ selenium_dir }}/phantomjs-{{ phantomjs_version }} -Dphantomjs.cli.args=\"--webdriver-logfile=/var/log/selenium/phantomjs.log\"{% endif %}"
 EXEC="${JAVA_CMD}"
-EXEC_REDIRECT="${JAVA_CMD} ${SELENIUM_HOME}/selenium-server-standalone-${SELENIUM_VERSION}.jar ${REDIRECT}"
+EXEC_REDIRECT="${JAVA_CMD} ${SELENIUM_HOME}/selenium-server-standalone-${SELENIUM_VERSION}.jar ${CHROMEDRIVER} ${PHANTOMJS} ${REDIRECT}"
 
 case "$1" in
     start)

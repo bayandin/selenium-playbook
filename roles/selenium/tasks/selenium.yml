@@ -1,0 +1,5 @@
+---
+- name: download selenium
+  get_url:
+    url=http://selenium-release.storage.googleapis.com/{{ ".".join(selenium_version.split(".")[:2]) }}/selenium-server-standalone-{{ selenium_version }}.jar
+    dest={{ selenium_dir }}/selenium-server-standalone-{{ selenium_version }}.jar

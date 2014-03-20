@@ -1,0 +1,17 @@
+---
+- name: create directory for downloads
+  shell: mkdir -p {{ tmp_dir }} creates={{ tmp_dir }}
+
+- name: download chromedriver
+  get_url:
+    url=https://chromedriver.storage.googleapis.com/{{ chromedriver_version }}/chromedriver_linux{{ ansible_userspace_bits }}.zip
+    dest={{ tmp_dir }}/chromedriver-{{ chromedriver_version }}.zip
+
+- name: install unzip
+  yum: name=unzip state=present
+
+- name: extract chromedriver from archive
+  shell: unzip -o {{ tmp_dir }}/chromedriver-{{ chromedriver_version }}.zip -d {{ tmp_dir }}
+
+- name: copy executable file for chromedriver
+  shell: cp {{ tmp_dir }}/chromedriver {{ selenium_dir }}/chromedriver-{{ chromedriver_version }}
