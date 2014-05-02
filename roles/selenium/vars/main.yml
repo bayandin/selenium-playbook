@@ -4,6 +4,6 @@ selenium_port: 4444
 selenium_dir: /opt/selenium
 tmp_dir: "{{ selenium_dir }}/tmp"
 with_chromedriver: true
-chromedriver_version: 2.9
+chromedriver_version: 2.10
 with_phantomjs: true
 phantomjs_version: 1.9.7
